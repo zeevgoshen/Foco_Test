@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 {
     builder.Services.AddControllers();
     builder.Services.AddScoped<ITestService, TestService>();
+    builder.Services.AddScoped<ISmsService, SmsService>();
     builder.Services.AddDbContext<DataContext>(
         o => o.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 }

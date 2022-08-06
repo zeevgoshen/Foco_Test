@@ -10,10 +10,12 @@ namespace FocoTest.Controllers { }
 public class TestsController : ApiController
 {
     private readonly ITestService _testService;
+    private readonly ISmsService _smsService;
 
-    public TestsController(ITestService testService)
+    public TestsController(ITestService testService, ISmsService smsService)
     {
         _testService = testService;
+        _smsService = smsService;
     }
 
 
@@ -83,7 +85,7 @@ public class TestsController : ApiController
         TestResponse response = MapTestResponse(test);
 
         // insert to users
-        var users = new Users(
+        var user = new Users(
             request.Id,
             siteId,
             request.PhoneNumber,
@@ -96,13 +98,16 @@ public class TestsController : ApiController
         var testSite = new TestSite(request.Id, siteId, response.ticketId.ToString());
         var testSiteQueue = new TestSiteQueue(siteId, response.ticketId.ToString(), "Open");
 
-        // save to DB
-        //if (ModelState.IsValid)
-        //{
-        await _testService.CreateTest(test, users, testSite, testSiteQueue);
-        //}
+        
+        int result = await _testService.CreateTest(test, user, testSite, testSiteQueue);
 
-        return Ok(value: response.ticketId);
+        if (result == 1)
+        {
+            // mock send sms
+            _smsService.SendSmsMessage(user.PhoneNumber, "");
+            return Ok(value: response.ticketId);
+        }
+
 
 
     }

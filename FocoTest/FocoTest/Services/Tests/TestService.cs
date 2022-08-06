@@ -57,7 +57,7 @@ public class TestService : ITestService
 
     }
 
-    public async Task CreateTest(
+    public async Task<int> CreateTest(
         Test test,
         Users user,
         TestSite testSite,
@@ -65,16 +65,18 @@ public class TestService : ITestService
     {
 
         // checks for existing user,test,status open ticket
-        //
 
         var existingUser = (from m in _context.Users
                             where m.Id == user.Id
                             select m.Id);
 
-        var existingTest = await _context.Tests!.SingleAsync(p => p.Id == user.Id);
+
+        var existingTest = (from m in _context.Tests
+                            where m.Id == user.Id
+                            select m.Id);
 
         var existingTestSite = (from m in _context.TestSites
-                      where m.SiteId == existingTest.SiteId
+                      where m.SiteId == testSite.SiteId
                                 select m.SiteId);
 
         if (existingUser.Count() == 0)
@@ -82,7 +84,7 @@ public class TestService : ITestService
             _context.Users.Add(user);
         }
 
-        if (existingTest is null)
+        if (existingTest.Count() == 0)
         {
             _context.Tests.Add(test);
         }
@@ -95,6 +97,7 @@ public class TestService : ITestService
         _context.TestSiteQueue.Add(testSiteQueue);
         _context.SaveChanges();
 
+        return 1;
         // Send sms using phone + ticketid
     }
 
