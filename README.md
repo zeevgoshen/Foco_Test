@@ -13,4 +13,6 @@ but will instead return the the original ticket number.</i>
 
 <h3>Run CallNextInLine.http to call the next queue ticket, in the order of addition/creation in the queue, and close the ticket.</h3>
 
+<h3>Sending SMS is only a mock and not functional. If it was, the SMS message would have been written to a db table also with the receipient details</h3>
+
 
