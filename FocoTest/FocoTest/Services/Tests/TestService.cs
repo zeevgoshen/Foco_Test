@@ -1,5 +1,6 @@
 using DataAccess.Data;
 using FocoTest.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace FocoTest.Services.Tests;
@@ -55,7 +56,7 @@ public class TestService : ITestService
         }
 
     }
-    
+
     public void CreateTest(
         Test test,
         Users user,
@@ -72,8 +73,8 @@ public class TestService : ITestService
 
         if (existingUser is null)
         {
-            _context.Users.Add(user);   
-            
+            _context.Users.Add(user);
+
         }
         _context.TestSites.Add(testSite);
         _context.TestSiteQueue.Add(testSiteQueue);
@@ -83,36 +84,22 @@ public class TestService : ITestService
     }
 
 
-    public string GetNextInLineForTestSite(string siteId)
+    //   public async Task<string> GetNextInLineForTestSite(string siteId)
+    public async Task<string> GetNextInLineForTestSite(string siteId)
     {
-        //var data = _context.TestSiteQueue
-        //    .Select(p => p.TicketStatus == "Open" && p.SiteId == siteId).ToList();
+
+        var test = await _context.TestSiteQueue.OrderBy(p => p.Id).
+            FirstOrDefaultAsync(p => p.SiteId == siteId
+        && p.TicketStatus == "Open");
 
 
-        //var testSite = _context.TestSiteQueue!.SelectMany(p => p.SiteId == siteId);
-        //var ndata = data.OrderBy(p1 => p1.Id).FirstOrDefault();
+        if (test is not null)
+        {
+            test.TicketStatus = "Closed";
+            _context.SaveChanges();
 
-        //var query = _context.TestSiteQueue.GetAsyncEnumerator();
-        //if (testSite is not null)
-        //{
-        //    var nextInLine = testSite.Select(p => p.TicketId).FirstOrDefault();
-        //}
+        }
 
-        //var data1 = _context.TestSiteQueue
-        //    .Where(p => p.SiteId == siteId).OrderBy(p => p.Id)
-        //    .Select(p => p.TicketStatus == "Open").FirstOrDefault();
-
-        var data1 = _context.TestSiteQueue
-    .Where(p => p.SiteId == siteId).OrderBy(p => p.Id)
-    .Select(p => p.TicketStatus == "Open");
-
-        var d1 = data1.FirstOrDefault();
-
-
-
-        //.Where(p => p.SiteId == siteId)
-        //.Select(p => p.TicketId)
-        //.FirstOrDefault();
         return "";
 
     }

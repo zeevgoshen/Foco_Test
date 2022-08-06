@@ -3,14 +3,14 @@ using FocoTest.Models;
 using FocoTest.Services.Tests;
 using ErrorOr;
 
-namespace FocoTest.Controllers {}
+namespace FocoTest.Controllers { }
 
 
 //[Route("[controller]")]
 public class TestsController : ApiController
 {
-   private readonly ITestService _testService;
-        
+    private readonly ITestService _testService;
+
     public TestsController(ITestService testService)
     {
         _testService = testService;
@@ -18,10 +18,10 @@ public class TestsController : ApiController
 
 
     [HttpPost("/tests/sites/{siteId:guid}/actions/callnext")]
-    public IActionResult CallNext(string siteId)
+    public async Task<IActionResult> CallNext(string siteId)
     {
 
-        _testService.GetNextInLineForTestSite(siteId);
+        await _testService.GetNextInLineForTestSite(siteId);
         //ErrorOr<Test> requestToTestResult = Test.Create(
         //    request.Id,
         //    siteId,
@@ -41,12 +41,12 @@ public class TestsController : ApiController
         //TestResponse response = MapTestResponse(test);
         return Ok(value: siteId);
 
-        
+
     }
 
 
 
-   [HttpPost("/tests/sites/{siteId:guid}/customers")]
+    [HttpPost("/tests/sites/{siteId:guid}/customers")]
     public IActionResult PerformCheckin(string siteId, CreateTestRequest request)
     {
         // check for existing test for the person, if the user exists, check
@@ -54,7 +54,7 @@ public class TestsController : ApiController
         string ticketId = "";
 
         ticketId = CheckForExistingOpenCase(request.Id);
-        
+
         if (ticketId != "")
         {
             // user already in line
@@ -78,7 +78,7 @@ public class TestsController : ApiController
         }
 
         var test = requestToTestResult.Value;
-        
+
         TestResponse response = MapTestResponse(test);
 
         // insert to users
@@ -100,10 +100,10 @@ public class TestsController : ApiController
         //{
         _testService.CreateTest(test, users, testSite, testSiteQueue);
         //}
-        
+
         return Ok(value: response.ticketId);
 
-        
+
     }
 
     private string CheckForExistingOpenCase(string id)
@@ -116,7 +116,7 @@ public class TestsController : ApiController
         return ticketId;
     }
 
-    static TestResponse MapTestResponse(Test test)    
+    static TestResponse MapTestResponse(Test test)
     {
         Random rnd = new Random();
 
