@@ -13,6 +13,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Requests", "Requests", "{4D814926-E2B4-4154-9B99-27CDE34471F8}"
+	ProjectSection(SolutionItems) = preProject
+		Requests\CallNextInLine.http = Requests\CallNextInLine.http
+		Requests\CreateTest.http = Requests\CreateTest.http
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

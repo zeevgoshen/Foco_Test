@@ -21,19 +21,19 @@ public class TestService : ITestService
         _context = context;
     }
 
-    public string CheckExistingTestByPersonId(string id)
+    public async Task<string> CheckExistingTestByPersonId(string id)
     {
         try
         {
 
-            var existingUser = _context.Users!.SingleOrDefault(p => p.Id == id);
+            var existingUser = await _context.Users!.SingleOrDefaultAsync(p => p.Id == id);
             var ticketId = "";
 
             if (existingUser is not null)
             {
                 ticketId = existingUser.TicketId;
 
-                var ticket = _context.TestSiteQueue!.SingleOrDefault(p => p.TicketId == ticketId);
+                var ticket = await _context.TestSiteQueue!.SingleOrDefaultAsync(p => p.TicketId == ticketId);
 
                 if (ticket is not null)
                 {
@@ -57,7 +57,7 @@ public class TestService : ITestService
 
     }
 
-    public void CreateTest(
+    public async Task CreateTest(
         Test test,
         Users user,
         TestSite testSite,
@@ -67,7 +67,7 @@ public class TestService : ITestService
         // checks for existing user,test,status open ticket
         //
 
-        var existingUser = _context.Users!.SingleOrDefault(p => p.Id == user.Id);
+        var existingUser = await _context.Users!.SingleOrDefaultAsync(p => p.Id == user.Id);
 
         _context.Tests.Add(test);
 

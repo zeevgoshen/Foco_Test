@@ -47,13 +47,13 @@ public class TestsController : ApiController
 
 
     [HttpPost("/tests/sites/{siteId:guid}/customers")]
-    public IActionResult PerformCheckin(string siteId, CreateTestRequest request)
+    public async Task<IActionResult> PerformCheckin(string siteId, CreateTestRequest request)
     {
         // check for existing test for the person, if the user exists, check
         // his ticket number and status
         string ticketId = "";
 
-        ticketId = CheckForExistingOpenCase(request.Id);
+        ticketId = await CheckForExistingOpenCase(request.Id);
 
         if (ticketId != "")
         {
@@ -98,7 +98,7 @@ public class TestsController : ApiController
         // save to DB
         //if (ModelState.IsValid)
         //{
-        _testService.CreateTest(test, users, testSite, testSiteQueue);
+        await _testService.CreateTest(test, users, testSite, testSiteQueue);
         //}
 
         return Ok(value: response.ticketId);
@@ -106,12 +106,12 @@ public class TestsController : ApiController
 
     }
 
-    private string CheckForExistingOpenCase(string id)
+    private async Task<string> CheckForExistingOpenCase(string id)
     {
         string ticketId = "";
         if (id != null)
         {
-            ticketId = _testService.CheckExistingTestByPersonId(id);
+            ticketId = await _testService.CheckExistingTestByPersonId(id);
         }
         return ticketId;
     }
