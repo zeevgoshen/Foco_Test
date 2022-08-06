@@ -1,0 +1,12 @@
+@siteId=738f4640-d8db-432b-b6c5-d96fdc9b10f7
+POST https://localhost:7228/tests/sites/{{siteId}}/customers
+Content-Type: application/json
+
+{
+    "Id": "12344",
+    "SiteId": "{{siteId}}",
+    "PhoneNumber": "0505727347",
+    "DateOfBirth": "1999-04-08",
+    "FirstName": "John",
+    "LastName": "Connor"
+}

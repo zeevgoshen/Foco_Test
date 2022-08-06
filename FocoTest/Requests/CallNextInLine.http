@@ -1,0 +1,8 @@
+@siteId=738f4640-d8db-432b-b6c5-d96fdc9b10f7
+POST https://localhost:7228/tests/sites/{{siteId}}/actions/callnext
+Content-Type: application/json
+    
+    {
+        "SiteId": "{{siteId}}"
+     
+    }
