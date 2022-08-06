@@ -9,7 +9,7 @@ public class Users
     [Key]
     public string Id { get; set; }
     [Required]
-    public string SiteId { get; set; }
+    public int SiteId { get; set; }
     [Required]
     [MaxLength(12)]
     public string PhoneNumber { get; set; }
@@ -24,7 +24,7 @@ public class Users
     public string TicketId { get; set; }
 
     public Users(string id,
-                string siteId,
+                int siteId,
                 string phoneNumber,
                 string dateOfBirth,
                 string firstName,

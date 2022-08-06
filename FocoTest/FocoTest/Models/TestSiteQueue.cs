@@ -9,13 +9,13 @@ public class TestSiteQueue
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     [Key]
-    public string SiteId { get; set; }
+    public int SiteId { get; set; }
     
     public string TicketId { get; set; }
 
     public string TicketStatus { get; set; }
 
-    public TestSiteQueue(string siteId, string ticketId, string ticketStatus)
+    public TestSiteQueue(int siteId, string ticketId, string ticketStatus)
     {
         SiteId = siteId;
         TicketId = ticketId;

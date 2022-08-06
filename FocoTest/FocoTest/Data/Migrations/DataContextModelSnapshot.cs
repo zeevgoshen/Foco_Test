@@ -50,9 +50,8 @@ namespace FocoTest.Data.Migrations
                         .HasMaxLength(12)
                         .HasColumnType("nvarchar(12)");
 
-                    b.Property<string>("SiteId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -64,8 +63,8 @@ namespace FocoTest.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("SiteId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
                     b.Property<string>("TicketId")
                         .HasColumnType("nvarchar(450)");
@@ -77,8 +76,8 @@ namespace FocoTest.Data.Migrations
 
             modelBuilder.Entity("FocoTest.Models.TestSiteQueue", b =>
                 {
-                    b.Property<string>("SiteId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
                     b.Property<string>("TicketId")
                         .HasColumnType("nvarchar(450)");
@@ -123,9 +122,8 @@ namespace FocoTest.Data.Migrations
                         .HasMaxLength(12)
                         .HasColumnType("nvarchar(12)");
 
-                    b.Property<string>("SiteId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("SiteId")
+                        .HasColumnType("int");
 
                     b.Property<string>("TicketId")
                         .IsRequired()

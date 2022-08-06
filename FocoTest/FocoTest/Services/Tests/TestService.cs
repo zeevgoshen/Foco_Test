@@ -28,7 +28,8 @@ public class TestService : ITestService
             {
                 ticketId = existingUser.TicketId;
 
-                var ticket = await _context.TestSiteQueue!.SingleOrDefaultAsync(p => p.TicketId == ticketId);
+                var ticket = await _context.TestSiteQueue!.SingleOrDefaultAsync(
+                    p => p.TicketId == ticketId);
 
                 if (ticket is not null)
                 {
@@ -116,7 +117,7 @@ public class TestService : ITestService
         }
     }
 
-    public async Task<Test?> GetNextInLineForTestSite(string siteId)
+    public async Task<Test?> GetNextInLineForTestSite(int siteId)
     {
         var testSiteQueue = await _context.TestSiteQueue.OrderBy(p => p.Id).
             FirstOrDefaultAsync(p => p.SiteId == siteId

@@ -19,7 +19,7 @@ public class TestsController : ApiController
 
 
     [HttpPost("/tests/sites/{siteId:int}/actions/callnext")]
-    public async Task<IActionResult> CallNext(string siteId)
+    public async Task<IActionResult> CallNext(int siteId)
     {
         var testeNextInLine = await _testService.GetNextInLineForTestSite(siteId);
 
@@ -33,7 +33,7 @@ public class TestsController : ApiController
 
 
     [HttpPost("/tests/sites/{siteId:int}/customers")]
-    public async Task<IActionResult> PerformCheckin(string siteId, CreateTestRequest request)
+    public async Task<IActionResult> PerformCheckin(int siteId, CreateTestRequest request)
     {
         // check for existing test for the person, if the user exists, check
         // his ticket number and status

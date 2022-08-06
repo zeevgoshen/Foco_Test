@@ -18,7 +18,7 @@ public class Test
     [Key]
     public string Id { get; set; }
     [Required]
-    public string SiteId { get; set; }
+    public int SiteId { get; set; }
     [Required]
     [MaxLength(12)]
     public string PhoneNumber { get; set; }
@@ -34,7 +34,7 @@ public class Test
 
 
     private Test(string id,
-                string siteId,
+                int siteId,
                 string phoneNumber,
                 string dateOfBirth,
                 string firstName,
@@ -53,7 +53,7 @@ public class Test
     }
 
     public static ErrorOr<Test> Create(string id,
-                                       string siteId,
+                                       int siteId,
                                        string phoneNumber,
                                        string dateOfBirth,
                                        string firstName,

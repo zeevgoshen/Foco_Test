@@ -6,12 +6,12 @@ public class TestSite
 {
     public string Id { get; set; }
     [Key]
-    public string SiteId { get; set; }
+    public int SiteId { get; set; }
 
     [Key]
     public string TicketId { get; set; }
     
-    public TestSite(string id, string siteId, string ticketId)
+    public TestSite(string id, int siteId, string ticketId)
     {
         Id = id;
         SiteId = siteId;
