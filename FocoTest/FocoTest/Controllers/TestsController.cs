@@ -20,8 +20,9 @@ public class TestsController : ApiController
     [HttpPost("/tests/sites/{siteId:guid}/actions/callnext")]
     public async Task<IActionResult> CallNext(string siteId)
     {
+        var test = await _testService.GetNextInLineForTestSite(siteId);
 
-        await _testService.GetNextInLineForTestSite(siteId);
+        
         //ErrorOr<Test> requestToTestResult = Test.Create(
         //    request.Id,
         //    siteId,
@@ -39,7 +40,7 @@ public class TestsController : ApiController
         //// save to DB
         ////_testService.CreateTest(test);
         //TestResponse response = MapTestResponse(test);
-        return Ok(value: siteId);
+        return Ok(value: test);
 
 
     }

@@ -67,16 +67,31 @@ public class TestService : ITestService
         // checks for existing user,test,status open ticket
         //
 
-        var existingUser = await _context.Users!.SingleOrDefaultAsync(p => p.Id == user.Id);
+        var existingUser = (from m in _context.Users
+                            where m.Id == user.Id
+                            select m.Id);
 
-        _context.Tests.Add(test);
+        var existingTest = await _context.Tests!.SingleAsync(p => p.Id == user.Id);
 
-        if (existingUser is null)
+        var existingTestSite = (from m in _context.TestSites
+                      where m.SiteId == existingTest.SiteId
+                                select m.SiteId);
+
+        if (existingUser.Count() == 0)
         {
             _context.Users.Add(user);
-
         }
-        _context.TestSites.Add(testSite);
+
+        if (existingTest is null)
+        {
+            _context.Tests.Add(test);
+        }
+
+        if (existingTestSite.Count() == 0)
+        {
+            _context.TestSites.Add(testSite);
+        }
+        
         _context.TestSiteQueue.Add(testSiteQueue);
         _context.SaveChanges();
 
@@ -85,8 +100,9 @@ public class TestService : ITestService
 
 
     //   public async Task<string> GetNextInLineForTestSite(string siteId)
-    public async Task<string> GetNextInLineForTestSite(string siteId)
+    public async Task<Test?> GetNextInLineForTestSite(string siteId)
     {
+        string ticketId = string.Empty;
 
         var test = await _context.TestSiteQueue.OrderBy(p => p.Id).
             FirstOrDefaultAsync(p => p.SiteId == siteId
@@ -96,11 +112,43 @@ public class TestService : ITestService
         if (test is not null)
         {
             test.TicketStatus = "Closed";
+            ticketId = test.TicketId;
             _context.SaveChanges();
 
+            // Send SMS
+
         }
+        
+        Test? result = await GetPersonDetailsByTicketId(ticketId);
 
-        return "";
 
+        return result;
+
+    }
+
+    public async Task<Test?> GetPersonDetailsByTicketId(string ticketId)
+    {
+        var existingUser = await _context.Users!.SingleOrDefaultAsync(p => p.TicketId == ticketId);
+        
+        
+        if (existingUser is not null)
+        {
+
+            var test = await _context.Tests!.SingleOrDefaultAsync(p => p.Id == existingUser.Id);
+            
+            if (test is not null)
+            {
+                return test;
+            }
+            
+            //var user = new Users(existingUser.Id,
+            //    existingUser.SiteId,
+            //    existingUser.PhoneNumber,
+            //    existingUser.DateOfBirth,
+            //    existingUser.FirstName,
+            //    existingUser.LastName,
+            //    existingUser.TicketId);
+        }
+        return null;
     }
 }
