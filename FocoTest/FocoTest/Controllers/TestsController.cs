@@ -6,8 +6,6 @@ using FocoTest.Constants;
 
 namespace FocoTest.Controllers { }
 
-
-//[Route("[controller]")]
 public class TestsController : ApiController
 {
     private readonly ITestService _testService;
@@ -93,8 +91,6 @@ public class TestsController : ApiController
             return Ok(value: response.ticketId);
         }
         return NoContent();
-
-
     }
 
     private async Task<string> CheckForExistingOpenCase(string id)

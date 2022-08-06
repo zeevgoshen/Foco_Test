@@ -113,14 +113,11 @@ public class TestService : ITestService
         if (existingUserUpdate != null)
         {
             existingUserUpdate.TicketId = user.TicketId;
-
         }
     }
 
     public async Task<Test?> GetNextInLineForTestSite(string siteId)
     {
-        //string ticketId = string.Empty;
-
         var testSiteQueue = await _context.TestSiteQueue.OrderBy(p => p.Id).
             FirstOrDefaultAsync(p => p.SiteId == siteId
         && p.TicketStatus == "Open");
@@ -134,7 +131,6 @@ public class TestService : ITestService
             // Change ticket state to "In-Process"/"Waiting for results..."
             // do some work, then close the ticked
             //
-            //ticketId = test.TicketId;
             if (result is not null)
             {
                 // update queue ticket
