@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using FocoTest.Models;
 using FocoTest.Services.Tests;
 using ErrorOr;
+using FocoTest.Constants;
 
 namespace FocoTest.Controllers { }
 
@@ -19,37 +20,21 @@ public class TestsController : ApiController
     }
 
 
-    [HttpPost("/tests/sites/{siteId:guid}/actions/callnext")]
+    [HttpPost("/tests/sites/{siteId:int}/actions/callnext")]
     public async Task<IActionResult> CallNext(string siteId)
     {
-        var test = await _testService.GetNextInLineForTestSite(siteId);
+        var testeNextInLine = await _testService.GetNextInLineForTestSite(siteId);
 
-        
-        //ErrorOr<Test> requestToTestResult = Test.Create(
-        //    request.Id,
-        //    siteId,
-        //    request.PhoneNumber,
-        //    request.DateOfBirth,
-        //    request.FirstName,
-        //    request.LastName);
-
-        //if (requestToTestResult.IsError)
-        //{
-        //    return Problem(requestToTestResult.Errors);
-        //}
-
-        //var test = requestToTestResult.Value;
-        //// save to DB
-        ////_testService.CreateTest(test);
-        //TestResponse response = MapTestResponse(test);
-        return Ok(value: test);
-
-
+        if (testeNextInLine == null)
+        {
+            return NoContent();
+        }
+        return Ok(value: testeNextInLine);
     }
 
 
 
-    [HttpPost("/tests/sites/{siteId:guid}/customers")]
+    [HttpPost("/tests/sites/{siteId:int}/customers")]
     public async Task<IActionResult> PerformCheckin(string siteId, CreateTestRequest request)
     {
         // check for existing test for the person, if the user exists, check
@@ -96,15 +81,15 @@ public class TestsController : ApiController
 
 
         var testSite = new TestSite(request.Id, siteId, response.ticketId.ToString());
-        var testSiteQueue = new TestSiteQueue(siteId, response.ticketId.ToString(), "Open");
+        var testSiteQueue = new TestSiteQueue(siteId, response.ticketId.ToString(), Strings.NEW_TICKET);
 
         
         int result = await _testService.CreateTest(test, user, testSite, testSiteQueue);
 
-        if (result == 1)
+        if (result > 0)
         {
             // mock send sms
-            _smsService.SendSmsMessage(user.PhoneNumber, "");
+            _smsService.SendSmsMessage(user.PhoneNumber, Strings.SCHEDULED_TEST);
             return Ok(value: response.ticketId);
         }
         return NoContent();

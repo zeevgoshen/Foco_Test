@@ -1,4 +1,5 @@
 using DataAccess.Data;
+using FocoTest.Constants;
 using FocoTest.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -8,12 +9,6 @@ namespace FocoTest.Services.Tests;
 
 public class TestService : ITestService
 {
-    // here we would store in EF or DB or repository
-    // this is in-memory storage, so we can use it for testing
-
-    //private static readonly Dictionary<string, Test> _tests = new();
-
-    //private static readonly Queue<Test> _tests = new();
     private readonly DataContext _context;
 
     public TestService(DataContext context)
@@ -37,7 +32,7 @@ public class TestService : ITestService
 
                 if (ticket is not null)
                 {
-                    if (ticket.TicketStatus == "Open")
+                    if (ticket.TicketStatus == Strings.NEW_TICKET)
                     {
                         ticketId = ticket.TicketId;
 
@@ -46,6 +41,10 @@ public class TestService : ITestService
                     {
                         ticketId = "";
                     }
+                } else
+                {
+                    existingUser.TicketId = "";
+                    _context.SaveChanges();
                 }
             }
             return ticketId;
@@ -54,7 +53,6 @@ public class TestService : ITestService
         {
             throw new Exception(ex.Message);
         }
-
     }
 
     public async Task<int> CreateTest(
@@ -63,9 +61,15 @@ public class TestService : ITestService
         TestSite testSite,
         TestSiteQueue testSiteQueue)
     {
-
         // checks for existing user,test,status open ticket
+        await AddEntitiesToDB(test, user, testSite);
+        _context.TestSiteQueue.Add(testSiteQueue);
 
+        return  _context.SaveChanges();
+    }
+
+    private async Task<Task> AddEntitiesToDB(Test test, Users user, TestSite testSite)
+    {
         var existingUser = (from m in _context.Users
                             where m.Id == user.Id
                             select m.Id);
@@ -76,10 +80,15 @@ public class TestService : ITestService
                             select m.Id);
 
         var existingTestSite = (from m in _context.TestSites
-                      where m.SiteId == testSite.SiteId
+                                where m.SiteId == testSite.SiteId
                                 select m.SiteId);
 
-        if (existingUser.Count() == 0)
+        if (existingUser.Count() > 0)
+        {
+            await UpdateUserTicket(user); 
+
+        }
+        else
         {
             _context.Users.Add(user);
         }
@@ -93,64 +102,79 @@ public class TestService : ITestService
         {
             _context.TestSites.Add(testSite);
         }
-        
-        _context.TestSiteQueue.Add(testSiteQueue);
-        _context.SaveChanges();
-
-        return 1;
-        // Send sms using phone + ticketid
+        return Task.CompletedTask;
     }
 
+    private async Task UpdateUserTicket(Users user)
+    {
+        var existingUserUpdate = await _context.Users!.SingleOrDefaultAsync(
+               p => p.Id == user.Id);
 
-    //   public async Task<string> GetNextInLineForTestSite(string siteId)
+        if (existingUserUpdate != null)
+        {
+            existingUserUpdate.TicketId = user.TicketId;
+
+        }
+    }
+
     public async Task<Test?> GetNextInLineForTestSite(string siteId)
     {
-        string ticketId = string.Empty;
+        //string ticketId = string.Empty;
 
-        var test = await _context.TestSiteQueue.OrderBy(p => p.Id).
+        var testSiteQueue = await _context.TestSiteQueue.OrderBy(p => p.Id).
             FirstOrDefaultAsync(p => p.SiteId == siteId
         && p.TicketStatus == "Open");
 
+        Test? result = null;
 
-        if (test is not null)
+        if (testSiteQueue is not null)
         {
-            test.TicketStatus = "Closed";
-            ticketId = test.TicketId;
-            _context.SaveChanges();
+            result = await GetPersonDetailsByTicketId(testSiteQueue.TicketId);
+            //
+            // Change ticket state to "In-Process"/"Waiting for results..."
+            // do some work, then close the ticked
+            //
+            //ticketId = test.TicketId;
+            if (result is not null)
+            {
+                // update queue ticket
+                testSiteQueue.TicketStatus = Strings.OLD_TICKET;
 
-            // Send SMS
+                // update user ticket field
+                var existingUser = await _context.Users!.SingleOrDefaultAsync(
+                    p => p.TicketId == testSiteQueue.TicketId);
 
+                if (existingUser is not null)
+                {
+                    existingUser.TicketId = "";
+                }
+                _context.SaveChanges();
+            }
         }
-        
-        Test? result = await GetPersonDetailsByTicketId(ticketId);
-
-
         return result;
-
     }
 
     public async Task<Test?> GetPersonDetailsByTicketId(string ticketId)
     {
         var existingUser = await _context.Users!.SingleOrDefaultAsync(p => p.TicketId == ticketId);
         
+        //var existingUser = (from m in _context.Tests
+        //                    where m.Id == ticketId
+        //                    select m.TicketId);
+
         
         if (existingUser is not null)
         {
+            var existingTest = await _context.Tests!.SingleOrDefaultAsync(p => p.Id == existingUser.Id);
 
-            var test = await _context.Tests!.SingleOrDefaultAsync(p => p.Id == existingUser.Id);
-            
-            if (test is not null)
+            //Test existingTest = ((Test)(from m in _context.Users
+            //                    where m.TicketId == ticketId
+            //                    select m.TicketId));
+
+            if (existingTest is not null)
             {
-                return test;
+                return existingTest;
             }
-            
-            //var user = new Users(existingUser.Id,
-            //    existingUser.SiteId,
-            //    existingUser.PhoneNumber,
-            //    existingUser.DateOfBirth,
-            //    existingUser.FirstName,
-            //    existingUser.LastName,
-            //    existingUser.TicketId);
         }
         return null;
     }
