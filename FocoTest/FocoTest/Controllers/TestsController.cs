@@ -107,7 +107,7 @@ public class TestsController : ApiController
             _smsService.SendSmsMessage(user.PhoneNumber, "");
             return Ok(value: response.ticketId);
         }
-
+        return NoContent();
 
 
     }
