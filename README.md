@@ -11,6 +11,6 @@
 <i>pressing several times with the same request (same person id and same test site) will not create several places in the queue
 but will instead return the the original ticket number.</i>
 
-<h3>run CallNextInLine.http to call the next queue ticket, in the order of addition/creation in the queue, and close the ticket.</h3>
+<h3>Run CallNextInLine.http to call the next queue ticket, in the order of addition/creation in the queue, and close the ticket.</h3>
 
 
