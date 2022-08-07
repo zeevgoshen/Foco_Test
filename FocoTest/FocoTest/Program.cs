@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 {
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
     builder.Services.AddControllers();
     builder.Services.AddScoped<ITestService, TestService>();
     builder.Services.AddScoped<ISmsService, SmsService>();
@@ -14,6 +16,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 var app = builder.Build();
 {
+     
+    app.UseSwagger();
+    app.UseSwaggerUI();
+     
+
     app.UseHttpsRedirection();
     app.MapControllers();
     app.Run();

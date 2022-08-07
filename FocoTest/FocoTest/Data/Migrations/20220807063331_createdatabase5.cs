@@ -4,7 +4,7 @@
 
 namespace FocoTest.Data.Migrations
 {
-    public partial class createdatabase : Migration
+    public partial class createdatabase5 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,7 +12,8 @@ namespace FocoTest.Data.Migrations
                 name: "Tests",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    TicketId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PersonId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SiteId = table.Column<int>(type: "int", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(12)", maxLength: 12, nullable: false),
                     DateOfBirth = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -22,7 +23,7 @@ namespace FocoTest.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tests", x => x.Id);
+                    table.PrimaryKey("PK_Tests", x => x.TicketId);
                 });
 
             migrationBuilder.CreateTable(
@@ -57,17 +58,17 @@ namespace FocoTest.Data.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    TicketId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PersonId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SiteId = table.Column<int>(type: "int", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(12)", maxLength: 12, nullable: false),
                     DateOfBirth = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    TicketId = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    LastName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.TicketId);
                 });
         }
 

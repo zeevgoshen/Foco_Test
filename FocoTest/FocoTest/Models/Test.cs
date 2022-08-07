@@ -1,6 +1,7 @@
 using ErrorOr;
 using FocoTest.ServiceErrors;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FocoTest.Models;
 
@@ -13,10 +14,9 @@ public class Test
     public const string MaxBirthDate = "31/12/2000";
     public const string MinBirthDate = "1/1/1900";
 
-    [Required]
-    [MaxLength(50)]
     [Key]
-    public string Id { get; set; }
+    public string TicketId { get; set; }
+    public string PersonId { get; set; }
     [Required]
     public int SiteId { get; set; }
     [Required]
@@ -33,7 +33,8 @@ public class Test
     public string DateCreated { get; set; }
 
 
-    private Test(string id,
+    private Test(string ticketId,
+                string personId,
                 int siteId,
                 string phoneNumber,
                 string dateOfBirth,
@@ -42,8 +43,8 @@ public class Test
                 string dateCreated)
                 
     {
-
-        Id = id;
+        TicketId = ticketId;
+        PersonId = personId;
         SiteId = siteId;
         PhoneNumber = phoneNumber;
         DateOfBirth = dateOfBirth;
@@ -52,7 +53,8 @@ public class Test
         DateCreated = dateCreated;
     }
 
-    public static ErrorOr<Test> Create(string id,
+    public static ErrorOr<Test> Create(string ticketId,
+                                        string personId,
                                        int siteId,
                                        string phoneNumber,
                                        string dateOfBirth,
@@ -61,7 +63,7 @@ public class Test
     {
         List<Error> errors = new();
 
-        if (id.Length is > MaxIdLength)
+        if (personId.Length is > MaxIdLength)
         {
             errors.Add(Errors.Test.InvalidId);
         }
@@ -93,7 +95,8 @@ public class Test
         }
         
         return new Test(
-            id,
+            ticketId,
+            personId,
             siteId,
             phoneNumber,
             dateOfBirth,

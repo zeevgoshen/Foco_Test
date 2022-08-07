@@ -16,12 +16,15 @@ public class TestService : ITestService
         _context = context;
     }
 
-    public async Task<string> CheckExistingTestByPersonId(string id)
+    public async Task<string> CheckExistingTestByPersonId(string id, int siteId)
     {
         try
         {
 
-            var existingUser = await _context.Users!.SingleOrDefaultAsync(p => p.Id == id);
+            var existingUser = await _context.Users!.AsNoTracking()
+                .SingleOrDefaultAsync(
+                p => p.PersonId == id && p.SiteId == siteId);
+
             var ticketId = "";
 
             if (existingUser is not null)
@@ -63,6 +66,7 @@ public class TestService : ITestService
         TestSiteQueue testSiteQueue)
     {
         // checks for existing user,test,status open ticket
+        
         await AddEntitiesToDB(test, user, testSite);
         _context.TestSiteQueue.Add(testSiteQueue);
 
@@ -71,30 +75,33 @@ public class TestService : ITestService
 
     private async Task<Task> AddEntitiesToDB(Test test, Users user, TestSite testSite)
     {
-        var existingUser = (from m in _context.Users
-                            where m.Id == user.Id
-                            select m.Id);
+        Users existingUser = _context.Users!.AsNoTracking().FirstOrDefault(
+                p => p.PersonId == user.PersonId && p.SiteId == user.SiteId);
 
+        Test existingTest = _context.Tests!.FirstOrDefault(
+                p => p.PersonId == user.PersonId && p.SiteId == user.SiteId);
 
-        var existingTest = (from m in _context.Tests
-                            where m.Id == user.Id
-                            select m.Id);
 
         var existingTestSite = (from m in _context.TestSites
                                 where m.SiteId == testSite.SiteId
                                 select m.SiteId);
 
-        if (existingUser.Count() > 0)
+        if (existingUser is not null)
         {
-            await UpdateUserTicket(user); 
-
+            _context.Users.Remove(existingUser);
+            _context.Users.Add(user);
         }
         else
         {
             _context.Users.Add(user);
         }
 
-        if (existingTest.Count() == 0)
+        if (existingTest is not null)
+        {
+            _context.Tests.Remove(existingTest);
+            _context.Tests.Add(test);
+        }
+        else
         {
             _context.Tests.Add(test);
         }
@@ -104,17 +111,6 @@ public class TestService : ITestService
             _context.TestSites.Add(testSite);
         }
         return Task.CompletedTask;
-    }
-
-    private async Task UpdateUserTicket(Users user)
-    {
-        var existingUserUpdate = await _context.Users!.SingleOrDefaultAsync(
-               p => p.Id == user.Id);
-
-        if (existingUserUpdate != null)
-        {
-            existingUserUpdate.TicketId = user.TicketId;
-        }
     }
 
     public async Task<Test?> GetNextInLineForTestSite(int siteId)
@@ -137,14 +133,6 @@ public class TestService : ITestService
                 // update queue ticket
                 testSiteQueue.TicketStatus = Strings.OLD_TICKET;
 
-                // update user ticket field
-                var existingUser = await _context.Users!.SingleOrDefaultAsync(
-                    p => p.TicketId == testSiteQueue.TicketId);
-
-                if (existingUser is not null)
-                {
-                    existingUser.TicketId = "";
-                }
                 _context.SaveChanges();
             }
         }
@@ -153,20 +141,15 @@ public class TestService : ITestService
 
     public async Task<Test?> GetPersonDetailsByTicketId(string ticketId)
     {
-        var existingUser = await _context.Users!.SingleOrDefaultAsync(p => p.TicketId == ticketId);
-        
-        //var existingUser = (from m in _context.Tests
-        //                    where m.Id == ticketId
-        //                    select m.TicketId);
-
+        var existingUser = await _context.Users!
+            .SingleAsync(
+            p => p.TicketId == ticketId);
         
         if (existingUser is not null)
         {
-            var existingTest = await _context.Tests!.SingleOrDefaultAsync(p => p.Id == existingUser.Id);
-
-            //Test existingTest = ((Test)(from m in _context.Users
-            //                    where m.TicketId == ticketId
-            //                    select m.TicketId));
+            Test existingTest = await _context.Tests!
+                .SingleAsync(
+                p => p.TicketId == existingUser.TicketId);
 
             if (existingTest is not null)
             {

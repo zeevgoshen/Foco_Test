@@ -1,13 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FocoTest.Models;
 
 public class Users
 {
-    [Required]
-    [MaxLength(50)]
-    [Key]
-    public string Id { get; set; }
+    
+    public string PersonId { get; set; }
     [Required]
     public int SiteId { get; set; }
     [Required]
@@ -21,26 +20,23 @@ public class Users
     [Required]
     [MaxLength(20)]
     public string LastName { get; set; }
+    [Key]
     public string TicketId { get; set; }
 
-    public Users(string id,
+    public Users(string personId,
                 int siteId,
                 string phoneNumber,
                 string dateOfBirth,
                 string firstName,
                 string lastName,
                 string ticketId)
-
     {
-
-        Id = id;
+        PersonId = personId;
         SiteId = siteId;
         PhoneNumber = phoneNumber;
         DateOfBirth = dateOfBirth;
         FirstName = firstName;
         LastName = lastName;
         TicketId = ticketId;
-
-
     }
 }

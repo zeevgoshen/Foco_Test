@@ -23,7 +23,12 @@
     <Compile Remove="Data\Migrations\20220804093557_createdatabase6.Designer.cs" />
   </ItemGroup>
 
-  <ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+	</ItemGroup>
+
+
+	<ItemGroup>
     <ProjectReference Include="..\FocoTest.Contracts\FocoTest.Contracts.csproj" />
   </ItemGroup>
 

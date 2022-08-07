@@ -3,7 +3,7 @@ namespace FocoTest.Contracts.Test{}
 
 public record TestResponse
 (
-    string Id,
+    string PersonId,
     int SiteId,
     string PhoneNumber,
     string DateOfBirth,

@@ -23,9 +23,8 @@ namespace FocoTest.Data.Migrations
 
             modelBuilder.Entity("FocoTest.Models.Test", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<string>("TicketId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("DateCreated")
                         .IsRequired()
@@ -45,6 +44,10 @@ namespace FocoTest.Data.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<string>("PersonId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasMaxLength(12)
@@ -53,7 +56,7 @@ namespace FocoTest.Data.Migrations
                     b.Property<int>("SiteId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("TicketId");
 
                     b.ToTable("Tests");
                 });
@@ -99,9 +102,8 @@ namespace FocoTest.Data.Migrations
 
             modelBuilder.Entity("FocoTest.Models.Users", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<string>("TicketId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("DateOfBirth")
                         .IsRequired()
@@ -117,6 +119,10 @@ namespace FocoTest.Data.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<string>("PersonId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasMaxLength(12)
@@ -125,11 +131,7 @@ namespace FocoTest.Data.Migrations
                     b.Property<int>("SiteId")
                         .HasColumnType("int");
 
-                    b.Property<string>("TicketId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
+                    b.HasKey("TicketId");
 
                     b.ToTable("Users");
                 });
