@@ -88,6 +88,7 @@ public class TestsController : ApiController
         {
             return NoContent();
         }
+        _smsService.SendSmsMessage(testeNextInLine.PhoneNumber, Strings.SCHEDULED_TEST);
         return Ok(value: testeNextInLine);
     }
 
