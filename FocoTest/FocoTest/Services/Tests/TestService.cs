@@ -20,7 +20,6 @@ public class TestService : ITestService
     {
         try
         {
-
             var existingUser = await _context.Users!.AsNoTracking()
                 .SingleOrDefaultAsync(
                 p => p.PersonId == id && p.SiteId == siteId);
@@ -39,7 +38,6 @@ public class TestService : ITestService
                     if (ticket.TicketStatus == Strings.NEW_TICKET)
                     {
                         ticketId = ticket.TicketId;
-
                     }
                     else
                     {
@@ -66,7 +64,6 @@ public class TestService : ITestService
         TestSiteQueue testSiteQueue)
     {
         // checks for existing user,test,status open ticket
-        
         await AddEntitiesToDB(test, user, testSite);
         _context.TestSiteQueue.Add(testSiteQueue);
 

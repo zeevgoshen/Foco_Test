@@ -1,9 +1,11 @@
 using ErrorOr;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace FocoTest.Controllers {}
 
 [ApiController]
+[Route("/tests/sites/")]
 public class ApiController: ControllerBase
 {
     protected IActionResult Problem(List<Error> errors)

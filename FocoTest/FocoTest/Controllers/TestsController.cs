@@ -17,20 +17,16 @@ public class TestsController : ApiController
         _smsService = smsService;
     }
 
-    [HttpPost("/tests/sites/{siteId:int}/customers")]
+    [HttpPost("{siteId:int}/customers")]
     public async Task<IActionResult> PerformCheckin(int siteId, CreateTestRequest request)
     {
-        // check for existing test for the person, if the user exists, check
-        // his ticket number and status
         string ticketId = "";
 
         ticketId = await CheckForExistingOpenCase(request.Id, siteId);
 
         if (ticketId != "")
         {
-            // user already in line
             return Ok(value: ticketId);
-
         }
 
         // Creating a new user test.
@@ -79,7 +75,7 @@ public class TestsController : ApiController
         return NoContent();
     }
 
-    [HttpPost("/tests/sites/{siteId:int}/actions/callnext")]
+    [HttpPost("{siteId:int}/actions/callnext")]
     public async Task<IActionResult> CallNext(int siteId)
     {
         var testeNextInLine = await _testService.GetNextInLineForTestSite(siteId);
